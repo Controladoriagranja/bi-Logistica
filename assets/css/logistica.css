@@ -1,0 +1,1 @@
+.logistica-devolucoes-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}.logistica-devolucoes-grid>.com-panel{min-width:0;margin:0}.logistica-devolucoes-grid .com-chart-viewport{min-width:0}@media(max-width:900px){.logistica-devolucoes-grid{grid-template-columns:minmax(0,1fr)}}
