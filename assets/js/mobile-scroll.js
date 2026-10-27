@@ -18,6 +18,7 @@
    if(!control){
     const element=chart.getDom();let host=element.parentElement;
     if(!host.classList.contains('pcp-comparativo-chart-scroll')){host=document.createElement('div');element.before(host);host.append(element);}
+    host.querySelectorAll(':scope > input.pcp-mobile-scroll-range').forEach(old=>old.remove());
     host.classList.add('pcp-mobile-scroll-host');const range=document.createElement('input');range.type='range';range.min=0;range.step=1;range.className='pcp-mobile-scroll-range';range.setAttribute('aria-label','Arrastar período do gráfico para consultar o histórico');host.append(range);control=chart.__pcpMobileScroll={range,count:0};
     range.oninput=()=>{if(!chart.getOption()?.series?.length)return;const start=Number(range.value);chart.dispatchAction({type:'dataZoom',dataZoomIndex:0,startValue:start,endValue:Math.min(control.count-1,start+control.visible-1)});};
     chart.on('datazoom',()=>{const start=chart.getOption()?.dataZoom?.[0]?.startValue;if(Number.isFinite(start))range.value=start;});
