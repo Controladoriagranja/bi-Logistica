@@ -32,5 +32,7 @@
 .suprimentos-report .log-financeiro .sup-table thead tr>th:nth-child(-n+2){z-index:7}
 .suprimentos-report .log-financeiro .sup-table tfoot tr>th{position:sticky;bottom:0;background:var(--card);z-index:5;border-top:2px solid var(--primary);font-weight:700}
 .suprimentos-report .log-financeiro .sup-table tfoot tr>th:nth-child(-n+2){z-index:7}
-body[data-page=financeiro] .com-main-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-page=pallets] .com-main-filters,body[data-page=financeiro] .com-main-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:767px){.suprimentos-report .log-financeiro .sup-table tr>:nth-child(2){width:180px;min-width:180px;max-width:180px}.suprimentos-report .log-financeiro col:nth-child(2){width:180px!important}}
+
+body[data-page=pallets] .log-financeiro .sup-table tr>:first-child{white-space:normal}

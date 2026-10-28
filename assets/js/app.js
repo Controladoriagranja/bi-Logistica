@@ -118,6 +118,14 @@
  lines('serie',info.periodos||[]);
  const cols=[['data','Data','date'],['unidade','Cód. unidade'],['unidade_nome','Unidade'],['descricao','Descrição'],['oc','OC'],['valor','Valor total da diária','money'],['observacao','Observação']];$('table').style.setProperty('--sup-table-width','1300px');$('table').innerHTML='<table class="com-table sup-table log-diarias-table"><thead><tr>'+cols.map(([,n])=>'<th>'+esc(n)+'</th>').join('')+'</tr></thead><tbody>'+(d.dados.length?d.dados.map(r=>'<tr>'+cols.map(([k,,t])=>'<td>'+esc(t==='date'?date(r[k]):t?fmt(r[k],t):r[k]||'—')+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="7">Nenhuma diária para os filtros selecionados.</td></tr>')+'</tbody><tfoot><tr><th colspan="5">Total do recorte</th><th>'+money(d.medidas.valor)+'</th><th></th></tr></tfoot></table>';PcpMobileScroll.table($('table'));$('count').textContent=num(d.total,0)+' diárias · Agrupadas por data, unidade, OC e observação';$('page').textContent='Página '+d.pagina;$('prev').disabled=d.pagina<=1;$('next').disabled=!d.mais;
  }
+ function palletsRender(d){
+  $('kpis').hidden=true;$('serie').closest('article').hidden=true;$('ranking').closest('article').hidden=true;
+  const panel=$('table').closest('article');panel.querySelector('h2').textContent='Controle de Pallets';panel.querySelector('.sup-page-size').hidden=true;panel.querySelector('.com-pager').hidden=true;
+  const rows=d.pallets_detalhe?.matriz||[],total=key=>rows.reduce((sum,r)=>sum+Number(r[key]||0),0),value=v=>v==null||Number(v)===0?'—':num(v,0),box=$('table');
+  $('count').textContent=rows.length+' transportadoras · Posição D-1 · Pareto acumulado por saldo, do maior para o menor';box.classList.add('log-financeiro');box.style.setProperty('--sup-table-width','1050px');
+  box.innerHTML='<table class="com-table sup-table"><colgroup><col style="width:90px"><col style="width:360px"><col><col><col><col></colgroup><thead><tr><th>Transportador</th><th>Descrição</th><th>Ave Nova</th><th>Real Alimentos</th><th>Total</th><th>Pareto (%)</th></tr></thead><tbody>'+rows.map(r=>'<tr><td>'+esc(r.codigo)+'</td><td>'+esc(r.nome)+'</td><td>'+value(r.ave_nova)+'</td><td>'+value(r.real_alimentos)+'</td><td>'+value(r.total)+'</td><td>'+pct(r.pareto)+'</td></tr>').join('')+'</tbody><tfoot><tr><th>Total</th><th></th><th>'+num(total('ave_nova'),0)+'</th><th>'+num(total('real_alimentos'),0)+'</th><th>'+num(total('total'),0)+'</th><th>'+(rows.length?'100%':'—')+'</th></tr></tfoot></table>';
+  if(!rows.length)box.innerHTML='<p>Nenhum pallet para os filtros selecionados.</p>';PcpMobileScroll.table(box);
+ }
  function financeiroRender(d){
   $('kpis').hidden=true;$('serie').closest('article').hidden=true;$('ranking').closest('article').hidden=true;
   const panel=$('table').closest('article');panel.querySelector('h2').textContent='Valores de Frete Pendentes';panel.querySelector('.sup-page-size').hidden=true;panel.querySelector('.com-pager').hidden=true;
@@ -142,6 +150,7 @@
   $('kpis').innerHTML=cells.map(([n,v,h])=>'<article class="card com-kpi"><span>'+esc(n)+'</span><strong>'+esc(v)+'</strong><small>'+esc(h)+'</small></article>').join('');
   $('estado').textContent='Dados reais · '+(d.data_limite?'D-1 · até '+date(d.data_limite)+' · ':'')+(d.cobertura.inicio?date(d.cobertura.inicio)+' a '+date(d.cobertura.fim)+' · ':'')+num(m.registros,0)+' registros no recorte · Fonte atualizada em '+new Date(d.fonte_atualizada_em).toLocaleString('pt-BR');$('ultimaAtualizacao').textContent=new Date(d.carregado_em).toLocaleString('pt-BR');$('regra').textContent=d.regra;
   $('serie').innerHTML='';$('ranking').innerHTML='';
+  if(page==='pallets'){palletsRender(d);return;}
   if(page==='financeiro'){financeiroRender(d);return;}
   if(page==='diarias'){diariasRender(d);return;}
   if(page==='ocupacao'){ocupacaoRender(d);return;}
