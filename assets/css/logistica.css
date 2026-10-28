@@ -22,4 +22,15 @@
 
 .suprimentos-report .log-diarias-table th:first-child,.suprimentos-report .log-diarias-table td:first-child{min-width:100px;width:100px;max-width:100px}.suprimentos-report .log-diarias-table td:last-child{white-space:normal;min-width:480px;text-align:left;font-weight:400}.suprimentos-report .log-diarias-table thead th{z-index:5;background:var(--card)}.suprimentos-report .log-diarias-table thead th:first-child{z-index:7}.suprimentos-report .log-diarias-table tfoot th{position:sticky;bottom:0;z-index:4;background:var(--card);border-top:2px solid var(--primary)}
 
-.log-financeiro{max-height:70vh}.log-financeiro th:first-child,.log-financeiro td:first-child{width:90px;min-width:90px;max-width:90px;box-sizing:border-box}.log-financeiro th:nth-child(2),.log-financeiro td:nth-child(2){position:sticky;left:90px;width:320px;min-width:320px;max-width:320px;box-sizing:border-box;background:var(--card);z-index:2;text-align:left}.log-financeiro thead th{position:sticky;top:0;z-index:5;background:var(--card)}.log-financeiro thead th:nth-child(2){z-index:7}.log-financeiro tfoot th{position:sticky;bottom:0;background:var(--card);z-index:5}
+.suprimentos-report .log-financeiro{max-height:70vh;overflow:auto;isolation:isolate}
+.suprimentos-report .log-financeiro table{table-layout:fixed;border-collapse:separate;border-spacing:0;width:100%;min-width:var(--sup-table-width)}
+.suprimentos-report .log-financeiro .sup-table tr>:nth-child(n){box-sizing:border-box;background:var(--card);padding:10px 12px;white-space:nowrap;text-align:right;width:auto;min-width:0;max-width:none;font-weight:400}
+.suprimentos-report .log-financeiro .sup-table tbody tr:nth-child(even)>td{background:var(--muted)}
+.suprimentos-report .log-financeiro .sup-table tr>:first-child{position:sticky;left:0;width:90px;min-width:90px;max-width:90px;z-index:2;text-align:left}
+.suprimentos-report .log-financeiro .sup-table tr>:nth-child(2){position:sticky;left:90px;width:360px;min-width:360px;max-width:360px;z-index:2;text-align:left;white-space:normal;overflow-wrap:anywhere;border-right:1px solid var(--border)}
+.suprimentos-report .log-financeiro .sup-table thead tr>th{position:sticky;top:0;background:var(--card);z-index:5;border-bottom:2px solid var(--primary);font-weight:600}
+.suprimentos-report .log-financeiro .sup-table thead tr>th:nth-child(-n+2){z-index:7}
+.suprimentos-report .log-financeiro .sup-table tfoot tr>th{position:sticky;bottom:0;background:var(--card);z-index:5;border-top:2px solid var(--primary);font-weight:700}
+.suprimentos-report .log-financeiro .sup-table tfoot tr>th:nth-child(-n+2){z-index:7}
+body[data-page=financeiro] .com-main-filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:767px){.suprimentos-report .log-financeiro .sup-table tr>:nth-child(2){width:180px;min-width:180px;max-width:180px}.suprimentos-report .log-financeiro col:nth-child(2){width:180px!important}}
