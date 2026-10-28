@@ -7,6 +7,7 @@ window.SuprimentosFilters=class {
   if(options.relatorio==='solicitacoes'){const primary=['solicitacao','mes','ano','grupo_comprador_filtro','situacao','unidade','oc'];this.fields=[...primary.map(k=>[k,k==='mes'?'Mês':k==='ano'?'Ano':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];this.primaryCount=7;}
   if(options.relatorio==='descargas'){const primary=['cliente','oc','unidade','ano','mes','semana'];this.fields=[...primary.map(k=>[k,k==='ano'?'Ano':k==='mes'?'Mês':k==='semana'?'Semana':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];}
   if(['financeiro','pallets'].includes(options.relatorio)){this.fields=fields.map(([k,n])=>[k,options.relatorio==='pallets'?(k==='transportador'?'Transportador':'Descrição'):n]);this.primaryCount=2;}
+  if(options.relatorio==='pesagem'){const primary=['unidade','segmento','rota_valida','ano','mes','semana'];this.fields=[...primary.map(k=>[k,k==='ano'?'Ano':k==='mes'?'Mês':k==='semana'?'Semana':k==='rota_valida'?'GBH':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];}
   this.fixedCfop=options.acesso?.cfop_vendas_fixo===true||['seller','supervisor'].includes(options.acesso?.modo);
   this.months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   this.defaults={...options.padrao,ano:[],mes:[]};
