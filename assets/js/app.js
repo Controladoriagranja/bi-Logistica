@@ -1,7 +1,7 @@
 "use strict";
 (async()=>{
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const pages={'custo-kg':'Custo de Frete por kg',frete:'Controle de Frete',ocupacao:'Performance de Ocupação',devolucoes:'Devoluções',ocorrencias:'Ocorrências de Custo',diarias:'Valores Diários',descargas:'Descarga Geral – Análise por Semana',pallets:'Controle de Pallets',financeiro:'Valores de Frete a Pagar',pesagem:'Movimento de Pesagem'};
+ const pages={'custo-kg':'Custo de Frete por kg',frete:'Controle de Frete',ocupacao:'Performance de Ocupação',devolucoes:'Devoluções',ocorrencias:'Ocorrências de Custo',diarias:'Valores Diários',descargas:'Descarga Geral – Análise por Semana',pallets:'Controle de Pallets',financeiro:'Valores de Frete Pendentes',pesagem:'Movimento de Pesagem'};
  const requested=new URLSearchParams(location.search).get('relatorio'),page=pages[requested]?requested:'frete';document.body.dataset.page=page;$('titulo').textContent=pages[page];document.title=pages[page]+' | Logística';
  const num=(v,d=2)=>v==null?'—':Number(v).toLocaleString('pt-BR',{maximumFractionDigits:d}),money=v=>v==null?'—':Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),pct=v=>v==null?'—':num(Number(v)*100)+'%',date=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'—',fmt=(v,type)=>type==='money'?money(v):type==='percent'?pct(v):type==='kg'?num(v)+' kg':num(v,0),compact=(v,type)=>type==='money'?(Math.abs(v)>=1e6?'R$ '+num(v/1e6,1)+' mi':Math.abs(v)>=1000?'R$ '+num(v/1000,1)+' mil':money(v)):fmt(v,type);
  function weekLabel(value){const d=new Date(String(value).slice(0,10)+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));const year=d.getUTCFullYear(),first=new Date(Date.UTC(year,0,1)),week=Math.ceil((((d-first)/86400000)+1)/7);return 'SEM'+String(week).padStart(2,'0')+'/'+String(year).slice(-2);}
@@ -118,6 +118,16 @@
  lines('serie',info.periodos||[]);
  const cols=[['data','Data','date'],['unidade','Cód. unidade'],['unidade_nome','Unidade'],['descricao','Descrição'],['oc','OC'],['valor','Valor total da diária','money'],['observacao','Observação']];$('table').style.setProperty('--sup-table-width','1300px');$('table').innerHTML='<table class="com-table sup-table log-diarias-table"><thead><tr>'+cols.map(([,n])=>'<th>'+esc(n)+'</th>').join('')+'</tr></thead><tbody>'+(d.dados.length?d.dados.map(r=>'<tr>'+cols.map(([k,,t])=>'<td>'+esc(t==='date'?date(r[k]):t?fmt(r[k],t):r[k]||'—')+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="7">Nenhuma diária para os filtros selecionados.</td></tr>')+'</tbody><tfoot><tr><th colspan="5">Total do recorte</th><th>'+money(d.medidas.valor)+'</th><th></th></tr></tfoot></table>';PcpMobileScroll.table($('table'));$('count').textContent=num(d.total,0)+' diárias · Agrupadas por data, unidade, OC e observação';$('page').textContent='Página '+d.pagina;$('prev').disabled=d.pagina<=1;$('next').disabled=!d.mais;
  }
+ function financeiroRender(d){
+  $('kpis').hidden=true;$('serie').closest('article').hidden=true;$('ranking').closest('article').hidden=true;
+  const panel=$('table').closest('article');panel.querySelector('h2').textContent='Valores de Frete Pendentes';panel.querySelector('.sup-page-size').hidden=true;panel.querySelector('.com-pager').hidden=true;
+  const rows=d.financeiro_detalhe?.matriz||[],years=[...new Set(rows.map(r=>r.ano))].sort((a,b)=>a==null?1:b==null?-1:a-b),groups=new Map(),totals=new Map();
+  for(const r of rows){if(!groups.has(r.codigo))groups.set(r.codigo,{nome:r.nome,values:new Map(),total:0});const g=groups.get(r.codigo),v=Number(r.saldo||0);g.values.set(r.ano,v);g.total+=v;totals.set(r.ano,(totals.get(r.ano)||0)+v);}
+  const list=[...groups].sort((a,b)=>Number(a[0])-Number(b[0]));$('count').textContent=list.length+' transportadoras · Fretes / Frango Abatido · Ano do vencimento original · Posição D-1';
+  const value=v=>v==null||v===0?'—':money(v),box=$('table');box.classList.add('log-financeiro');box.style.setProperty('--sup-table-width',Math.max(900,410+140*(years.length+1))+'px');
+  box.innerHTML='<table class="com-table sup-table"><thead><tr><th>Código</th><th>Nome</th>'+years.map(y=>'<th>'+ (y==null?'Sem vencimento':'Saldo '+y)+'</th>').join('')+'<th>Saldo Total</th></tr></thead><tbody>'+list.map(([code,g])=>'<tr><td>'+esc(code)+'</td><td>'+esc(g.nome)+'</td>'+years.map(y=>'<td>'+value(g.values.get(y))+'</td>').join('')+'<td>'+money(g.total)+'</td></tr>').join('')+'</tbody><tfoot><tr><th>Total</th><th></th>'+years.map(y=>'<th>'+money(totals.get(y))+'</th>').join('')+'<th>'+money(d.medidas.saldo)+'</th></tr></tfoot></table>';
+  if(!list.length)box.innerHTML='<p>Nenhum frete pendente para os filtros selecionados.</p>';PcpMobileScroll.table(box);
+ }
  function render(d){
   charts.forEach(c=>c.dispose());charts=[];const m=d.medidas;let cells;
   if(page==='frete')cells=[['Diferença de frete',money(m.valor),'Frete por kg acima da tarifa da rota'],['Valor de ocupação',money(m.frete),'Cargas abaixo do peso mínimo'],['Complemento de rota',money(m.frete_total),'Diferença menos ocupação'],['Peso transportado',m.peso_liquido==null?'—':num(Number(m.peso_liquido)/1000)+' t','Cargas com peso mínimo definido']];
@@ -132,6 +142,7 @@
   $('kpis').innerHTML=cells.map(([n,v,h])=>'<article class="card com-kpi"><span>'+esc(n)+'</span><strong>'+esc(v)+'</strong><small>'+esc(h)+'</small></article>').join('');
   $('estado').textContent='Dados reais · '+(d.data_limite?'D-1 · até '+date(d.data_limite)+' · ':'')+(d.cobertura.inicio?date(d.cobertura.inicio)+' a '+date(d.cobertura.fim)+' · ':'')+num(m.registros,0)+' registros no recorte · Fonte atualizada em '+new Date(d.fonte_atualizada_em).toLocaleString('pt-BR');$('ultimaAtualizacao').textContent=new Date(d.carregado_em).toLocaleString('pt-BR');$('regra').textContent=d.regra;
   $('serie').innerHTML='';$('ranking').innerHTML='';
+  if(page==='financeiro'){financeiroRender(d);return;}
   if(page==='diarias'){diariasRender(d);return;}
   if(page==='ocupacao'){ocupacaoRender(d);return;}
   if(page==='frete'){freteRender(d);return;}
