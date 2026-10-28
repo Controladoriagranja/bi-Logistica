@@ -3,7 +3,7 @@
  window.PcpMobileScroll={
   active(){return matchMedia('(max-width:767px)').matches;},
   table(box,{latest=false,snap=0}={}){
-   if(!this.active())return;
+   if(!this.active()){if(latest)requestAnimationFrame(()=>{box.scrollLeft=Math.max(0,box.scrollWidth-box.clientWidth);});return;}
    let control=box.__pcpMobileTable;
    if(!control){
     const shell=document.createElement('div');shell.className='pcp-mobile-table-shell';box.before(shell);shell.append(box);const range=document.createElement('input');range.type='range';range.min=0;range.step=1;range.className='pcp-mobile-scroll-range';range.setAttribute('aria-label','Rolar tabela horizontalmente');shell.append(range);
@@ -11,7 +11,7 @@
     control.sync=(reset=false)=>{const max=Math.max(0,box.scrollWidth-box.clientWidth);range.max=max;range.disabled=max<1;range.hidden=max<1;shell.classList.toggle('com-table-fits',max<1);const cells=Array.from(box.querySelectorAll(':scope > table > thead > tr:first-child > th')).filter(e=>getComputedStyle(e).display!=='none');hint.textContent=cells.length+' colunas · '+(max<1?'todas visíveis':'mova somente pela barra abaixo');if(reset)box.scrollLeft=control.options.latest?max:0;range.value=box.scrollLeft;range.style.setProperty('--pcp-scroll-thumb',Math.max(36,Math.min(100,box.clientWidth*box.clientWidth/Math.max(1,box.scrollWidth)))+'px');};
     range.oninput=()=>box.scrollLeft=Number(range.value);range.onchange=()=>{const step=control.options.snap;if(step>0)box.scrollLeft=Math.round(box.scrollLeft/step)*step;control.sync();};box.addEventListener('scroll',()=>range.value=box.scrollLeft,{passive:true});const observer=new ResizeObserver(()=>control.sync());observer.observe(box);control.observer=observer;
    }
-   control.options={latest,snap};const signature=box.querySelector('thead')?.textContent||'';control.sync(control.signature!==signature);control.signature=signature;
+   control.options={latest,snap};const signature=box.querySelector('thead')?.textContent||'';control.sync(latest||control.signature!==signature);control.signature=signature;
   },
   config(chart,count,changed,{left=48,right=22,filterMode='none',visible=4,initial='end'}={}){
    let control=chart.__pcpMobileScroll;
