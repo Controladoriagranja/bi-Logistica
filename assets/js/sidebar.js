@@ -28,7 +28,7 @@
                         <span>${item.label}</span>
                     </a>
                 `).join("")}
-            </nav><nav class="pcp-support-nav" aria-label="Suporte Logística"><a href="docs.html">Ajuda</a></nav>
+            </nav><nav class="pcp-support-nav" aria-label="Suporte Logística"><a href="ajuda.html">Ajuda</a></nav>
         </aside>
     `;
 
