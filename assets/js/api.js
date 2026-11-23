@@ -3,6 +3,7 @@ class SuprimentosApiError extends Error{
  constructor(message,status=0){super(message);this.name='SuprimentosApiError';this.status=status;}
 }
 window.SuprimentosApi={
+ canViewOtif(){return this._otifPermission??=(this.get('acesso/otif').then(r=>r.permitido===true));},
  async post(resource,body){return this.get(resource,{},undefined,{method:'POST',body:JSON.stringify(body)});},
  async get(resource,params={},signal,options={}){
   let token='';try{token=sessionStorage.getItem(SUPRIMENTOS_CONFIG.sessionKey)||'';}catch(_){}

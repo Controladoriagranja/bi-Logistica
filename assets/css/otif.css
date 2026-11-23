@@ -18,3 +18,9 @@ body[data-page="otif"] .otif-charts header h2{font-size:14px}
 body[data-page="otif"] .otif-charts header p{font-size:12px}
 body[data-page="otif"] #otifBarsNote{padding:0 4px;font-size:12px}
 body[data-page="otif"] #otifBases{font-size:12px}
+
+.otif-selection{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;margin:0 0 12px;background:var(--muted);border-left:3px solid #801426;border-radius:6px;font-size:12px}.otif-selection[hidden]{display:none}#acompanhamento{scroll-margin-top:16px}.otif-selection button{font-size:11px}@media(max-width:650px){.otif-selection{align-items:flex-start;flex-direction:column}}
+
+body[data-page="otif"] #conteudo[hidden],body[data-page="otif"] .filter-card[hidden]{display:none!important}
+
+.otif-filters .com-filter-field{min-width:0;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted-foreground)}.otif-filters .com-picker>summary{height:36px;box-sizing:border-box}.otif-filters .com-picker-panel label{display:flex;flex-direction:row;align-items:center;gap:8px;color:var(--foreground)}.otif-filters .com-picker-panel input[type=checkbox]{width:14px;height:14px;padding:0;flex:none;accent-color:#801426}.otif-filters .com-picker-panel label[hidden]{display:none}.otif-filters input[type=hidden]{display:none}
