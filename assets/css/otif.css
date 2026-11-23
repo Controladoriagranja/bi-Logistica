@@ -3,3 +3,18 @@
 .otif-panel-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 .otif-charts{display:grid;grid-template-columns:1fr 1.2fr;gap:14px}.otif-charts article{min-width:0}.otif-chart{width:100%;height:350px}.otif-charts header p{line-height:1.6}.otif-charts .com-status{line-height:1.6}@media(max-width:800px){.otif-charts{grid-template-columns:1fr}.otif-chart{height:310px}}
+
+/* Keep the date column below the table header when scrolling in either direction. */
+body[data-page="otif"] #tabela{position:relative;isolation:isolate;scrollbar-gutter:stable;scrollbar-color:#999 #eee;overscroll-behavior:contain}
+body[data-page="otif"] #tabela thead{position:sticky;top:0;z-index:4;background:var(--card)}
+body[data-page="otif"] #tabela thead th{top:0;z-index:4;background:var(--card);height:48px}
+body[data-page="otif"] #tabela thead th:first-child{left:0;z-index:6}
+body[data-page="otif"] #tabela tbody td:first-child{position:sticky;left:0;top:auto;z-index:1;min-width:106px;width:106px;white-space:nowrap;background:var(--card)}
+body[data-page="otif"] #tabela tbody tr:nth-child(even) td:first-child{background:var(--muted)}
+body[data-page="otif"] #tabela td{font-weight:400;line-height:1.5;padding:12px 10px}
+body[data-page="otif"] #tabela th:first-child{min-width:106px;width:106px;white-space:nowrap}
+body[data-page="otif"] #tabela td:nth-child(4),body[data-page="otif"] #tabela td:nth-child(6){white-space:normal;min-width:180px;text-align:left}
+body[data-page="otif"] .otif-charts header h2{font-size:14px}
+body[data-page="otif"] .otif-charts header p{font-size:12px}
+body[data-page="otif"] #otifBarsNote{padding:0 4px;font-size:12px}
+body[data-page="otif"] #otifBases{font-size:12px}
