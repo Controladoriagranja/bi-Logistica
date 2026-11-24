@@ -34,3 +34,5 @@
 }
 
 .open-prazo-warnings{margin-bottom:14px;padding:14px 18px;border-left:4px solid #c58a21}.open-prazo-warnings summary{cursor:pointer;font-weight:600;color:var(--text-color,inherit)}.open-prazo-warnings p{font-size:12px;margin:10px 0}.open-prazo-warnings ul{max-height:230px;overflow-y:auto;margin:0;padding-left:20px}.open-prazo-warnings li{font-size:12px;line-height:1.6;margin:8px 0}
+
+.open-badge.closed{background:#dff1e8;color:#196044}
