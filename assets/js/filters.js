@@ -8,6 +8,7 @@ window.SuprimentosFilters=class {
   if(options.relatorio==='descargas'){const primary=['cliente','oc','unidade','ano','mes','semana'];this.fields=[...primary.map(k=>[k,k==='ano'?'Ano':k==='mes'?'Mês':k==='semana'?'Semana':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];}
   if(['financeiro','pallets'].includes(options.relatorio)){this.fields=fields.map(([k,n])=>[k,options.relatorio==='pallets'?(k==='transportador'?'Transportador':'Descrição'):n]);this.primaryCount=2;}
   if(options.relatorio==='pesagem'){const primary=['unidade','segmento','rota_valida','ano','mes','semana'];this.fields=[...primary.map(k=>[k,k==='ano'?'Ano':k==='mes'?'Mês':k==='semana'?'Semana':k==='rota_valida'?'GBH':fields.find(([f])=>f===k)[1]]),...fields.filter(([k])=>!primary.includes(k))];}
+  if(options.campos_viagem){this.fields.splice(6,0,['viagem','Ocorrências de viagem']);this.primaryCount=7;}
   this.fixedCfop=options.acesso?.cfop_vendas_fixo===true||['seller','supervisor'].includes(options.acesso?.modo);
   this.months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   this.defaults={...options.padrao,ano:[],mes:[]};
@@ -21,6 +22,7 @@ window.SuprimentosFilters=class {
    this.states[k]={values:query.has(k)?query.getAll(k).filter(Boolean):query.has(k+'_exc')?[]:[...(this.defaults[k]||[])],excluded:query.getAll(k+'_exc').filter(Boolean)};
    if(k==='ano'&&Array.isArray(options.anos_disponiveis)){const allowed=options.anos_disponiveis.map(String),state=this.states[k],hadSelection=state.values.length>0;state.values=state.values.filter(v=>v==='__nenhum__'||allowed.includes(v));if(hadSelection&&!state.values.length)state.values=['__nenhum__'];state.excluded=state.excluded.filter(v=>allowed.includes(v));}
    if(this.fixedCfop&&['cfop','descricao_cfop'].includes(k))this.states[k]={values:[...(this.defaults[k]||[])],excluded:[]};
+   if(k==='viagem'&&!this.states[k].values.length&&!this.states[k].excluded.length)this.explicitAll[k]=true;
    this.labels[k]=new Map();this.refresh(k);
    const detail=host.querySelector('[data-filter="'+k+'"]');
    if(this.fixedCfop&&['cfop','descricao_cfop'].includes(k)){const summary=detail.querySelector('summary');summary.setAttribute('aria-disabled','true');summary.title='Todas as descrições iniciadas por VENDA. Regra fixa para este acesso.';summary.onclick=e=>e.preventDefault();detail.querySelectorAll('input').forEach(input=>input.disabled=true);detail.addEventListener('toggle',()=>{detail.open=false;});continue;}
